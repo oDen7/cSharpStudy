@@ -3,15 +3,15 @@
  * @Description: 项目描述
  * @Author: oDen7
  * @LastEditors: oDen7
- * @LastEditTime: 2020-07-10 00:35:18
+ * @LastEditTime: 2020-07-10 00:37:28
 --> 
 # CSharpStudy ----- CSharp学习项目
 ### 努力成为一个CSharper
 
 ##### 描述 ----- Description
-> 记录自己学习c#的点点滴滴～
-> 做一个语法字典,方便自己查询语法特性
-> 帮助其他人学习C#,共同进步
+> - 记录自己学习c#的点点滴滴～
+> - 做一个语法字典,方便自己查询语法特性
+> - 帮助其他人学习C#,共同进步
 
 ##### TODO
 > - [X] Hello World
