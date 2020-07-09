@@ -1,9 +1,9 @@
 <!--
- * @File Name: 
- * @Description: 
+ * @File Name: README.md
+ * @Description: 项目描述
  * @Author: oDen7
  * @LastEditors: oDen7
- * @LastEditTime: 2020-07-09 15:22:53
+ * @LastEditTime: 2020-07-09 15:24:44
 --> 
 # CSharp Study CSharp学习项目
 ### 我想成为一个CSharper
