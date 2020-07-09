@@ -3,7 +3,7 @@
  * @Description: 项目描述
  * @Author: oDen7
  * @LastEditors: oDen7
- * @LastEditTime: 2020-07-09 15:24:44
+ * @LastEditTime: 2020-07-10 00:29:27
 --> 
 # CSharp Study CSharp学习项目
 ### 我想成为一个CSharper
@@ -12,6 +12,9 @@
 > 记录自己的c#学习经历
 
 ##### TODO
+> - [X] Hello World
+> - [X] 格式化输出
+> - [ ] 注释
 > - [ ] 类
 > - [ ] 方法
 > - [ ] 结构

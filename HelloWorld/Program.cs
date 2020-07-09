@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace cSharpStudy
+namespace HelloWorld
 {
     class Program
     {
