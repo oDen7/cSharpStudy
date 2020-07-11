@@ -3,7 +3,7 @@
  * @Description: 项目描述
  * @Author: oDen7
  * @LastEditors: oDen7
- * @LastEditTime: 2020-07-10 00:39:41
+ * @LastEditTime: 2020-07-11 22:06:38
 --> 
 # CSharpStudy ----- CSharp学习项目
 ### 努力成为一个CSharper
@@ -16,8 +16,9 @@
 #### 做了什么 ----- TODO
 > - [X] Hello World
 > - [X] 格式化输出
+> - [X] 数据类型
 > - [ ] 注释
-> - [ ] 类
+> - [X] 类的基本概念
 > - [ ] 方法
 > - [ ] 结构
 > - [ ] 数组

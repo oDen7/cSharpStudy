@@ -6,10 +6,6 @@ namespace FormatOuput
     {
         static void Main(string[] args)
         {
-            // 单行注释
-            /* 
-                多行注释
-            */ 
             int number = 1000;
             Console.WriteLine("{0},{1}", 500, number); // 多重标记和值
             Console.WriteLine("{0:C}", number); // 格式化为货币
