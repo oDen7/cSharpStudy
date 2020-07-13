@@ -6,6 +6,19 @@ namespace AdvancedMethod
     {
         public int val = 20;
     }
+    class RefClass
+    {
+        // 调用了修改的ref局部变量的代码,所以类的字段值改变了。
+        private int _score = 5;
+        public ref int refToValue()
+        {
+            return ref _score;
+        }
+        public void scoreDisplay()
+        {
+            Console.WriteLine($"value inside class object : {_score}");
+        }
+    }
     class Program
     {
         static void valueParamMethod(Example e1, int a1) // 传递 值参数
@@ -63,6 +76,14 @@ namespace AdvancedMethod
             }
         }
 
+        static ref int Max(ref int v1, ref int v2)
+        {
+            // 返回较大值的变量引用,而不是实际的值。
+            if (v1 > v2)
+                return ref v1;
+            else
+                return ref v2;
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("=========值参数=========");
@@ -106,6 +127,21 @@ namespace AdvancedMethod
             Console.WriteLine("=========参数数组作为实参=========");
             int[] lists = new int[] { 5, 6, 7 }; // 创建并初始化数组
             paramArrayMethod(lists);  // 方法调用
+            Console.WriteLine("=========ref局部变量和ref返回=========");
+            Console.WriteLine("=========修改ref局部变量的代码=========");
+            RefClass refClass = new RefClass();
+            refClass.scoreDisplay();
+            ref int score = ref refClass.refToValue();
+            score = 10;
+            refClass.scoreDisplay();
+            Console.WriteLine("=========返回变量引用=========");
+            int v1 = 10;
+            int v2 = 20;
+            Console.WriteLine($"初始化:v1 {v1},v2 {v2}");
+            ref int max = ref Max(ref v1, ref v2);
+            Console.WriteLine($"引用函数调用:{max}");
+            max++;
+            Console.WriteLine($"修改引用变量的值:max {max}, v1:{v1}, v2:{v2}");
         }
     }
 }
@@ -159,4 +195,20 @@ namespace AdvancedMethod
 
     返回类型不是签名的一部分
     形参的名称不是签名的一部分
+*/
+
+// ref局部变量和ref返回
+/*
+    ref关键字传递一个对象引用给方法调用,这样在调用上下文中,对对象的任何改动在方法返回后依然可见。
+    ref局部变量,它允许一个变量是另一个变量的别名。
+    使用这个功能创建一个变量的别名,即使引用的对象是值类型。
+    对任意一个变量的赋值都会反映到另一个变量上,因为它们引用的是相同的对象,即使是值类型。
+
+    不能将返回类型是void的方法声明为ref语法
+    ref return:
+        不能包括 空值(null) 常量 枚举成员 类或者结构体的属性 指向只读位置的指针
+        只能指向原先就在调用域内的位置,或者字段. 
+        ref局部变量只能被赋值一次.
+        即使将一个方法声明为ref返回方法,如果在调用该方法时省略了ref关键字,则返回的将是值,而不是指向值的内存位置的指针。
+        如果将ref局部变量作为常规的实际参数传递给其他方法,则该方法仅获取该变量的一个副本.(尽管包含指向存储位置的指针,但使用这种方式时,它会传递值而不是引用)
 */
