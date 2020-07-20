@@ -44,17 +44,17 @@ namespace DataType
             // char c = U+0000;
             // decimal d = 7.9e+28;
 
-            Console.WriteLine("{0}", number);
-            Console.WriteLine("{0}", number1);
-            Console.WriteLine("{0}", number2);
-            Console.WriteLine("{0}", number3);
-            Console.WriteLine("number4:{0},many:{1}", number4, many); // 多变量声明
-            Console.WriteLine("{0}", number5);
-            Console.WriteLine("{0}", number6);
-            Console.WriteLine("{0}", number7);
-            Console.WriteLine("{0}", number8);
-            Console.WriteLine("{0}", number9);
-            Console.WriteLine("可空类型:{0}", Null);
+            Console.WriteLine("sbyte:{0}", number);
+            Console.WriteLine("byte:{0}", number1);
+            Console.WriteLine("short:{0}", number2);
+            Console.WriteLine("ushort:{0}", number3);
+            Console.WriteLine("多变量声明 int number4:{0},int many:{1}", number4, many); // 多变量声明
+            Console.WriteLine("uint:{0}", number5);
+            Console.WriteLine("long:{0}", number6);
+            Console.WriteLine("ulong:{0}", number7);
+            Console.WriteLine("float:{0}", number8);
+            Console.WriteLine("double:{0}", number9);
+            Console.WriteLine("可空类型null:{0}", Null);
             // Console.WriteLine("{0}",c);
             // Console.WriteLine("{0}",d);
         }
