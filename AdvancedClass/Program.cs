@@ -1,5 +1,5 @@
 ﻿using System;
-
+using static AdvancedClass.StaticPropertyClass;
 namespace AdvancedClass
 {
     class InstanceClass　 // 实例类成员
@@ -68,7 +68,7 @@ namespace AdvancedClass
         }
     }
 
-    class RunOtherComputeAttr
+    class RunOtherComputeProperty
     {
         private int _property1; // 字段
         private int _property2;
@@ -123,6 +123,35 @@ namespace AdvancedClass
         }
     }
 
+    class StaticPropertyClass
+    {
+        public static int inValue { get; set; }
+        public void printValue()
+        {
+            Console.WriteLine($"StaticPropertyClass inValue:{inValue}"); // 从内部访问
+        }
+    }
+
+    class ConstructorClass
+    {
+        private int _inValue;
+        public ConstructorClass() // 带参数的构造函数
+        {
+            _inValue = 10;
+        }
+
+        // 构造函数重载
+        public ConstructorClass(int inValue) // 带参数的构造函数
+        {
+            _inValue = inValue;
+        }
+
+        public void printValue()
+        {
+            Console.WriteLine("ConstructorClass _inValue:{0}", _inValue);
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -158,12 +187,12 @@ namespace AdvancedClass
             // 把 属性 看作一个字段,从中读取它的值.
             Console.WriteLine($"读取属性Property2:{attrClass.Property2}"); // 隐式调用get方法 
             Console.WriteLine("===========执行其他计算属性===========");
-            RunOtherComputeAttr runOtherComputeAttr = new RunOtherComputeAttr();
-            Console.WriteLine($"执行其他计算只读属性Property3:{runOtherComputeAttr.Property3}");
-            runOtherComputeAttr.Property1 = 10;
-            Console.WriteLine($"执行其他计算表达式Property1:{runOtherComputeAttr.Property1}");
-            runOtherComputeAttr.Property2 = 20;
-            Console.WriteLine($"使用c#7.0中getter/setter表达函数体,读取字段Property2:{runOtherComputeAttr.Property2}");
+            RunOtherComputeProperty runOtherComputeProperty = new RunOtherComputeProperty();
+            Console.WriteLine($"执行其他计算只读属性Property3:{runOtherComputeProperty.Property3}");
+            runOtherComputeProperty.Property1 = 10;
+            Console.WriteLine($"执行其他计算表达式Property1:{runOtherComputeProperty.Property1}");
+            runOtherComputeProperty.Property2 = 20;
+            Console.WriteLine($"使用c#7.0中getter/setter表达函数体,读取字段Property2:{runOtherComputeProperty.Property2}");
             Console.WriteLine("===========只读属性===========");
             RightTriangle rightTriangle = new RightTriangle();
             Console.WriteLine($"只读属性求第三边长度:{rightTriangle.Hypotenuse}");
@@ -171,6 +200,17 @@ namespace AdvancedClass
             AutoPropertyClass autoPropertyClass = new AutoPropertyClass();
             autoPropertyClass.inValue = 100;
             Console.WriteLine("自动实现属性:{0}", autoPropertyClass.inValue);
+            Console.WriteLine("===========静态属性===========");
+            StaticPropertyClass.inValue = 100; // 从外部访问
+            Console.WriteLine("从外部访问:{0}", StaticPropertyClass.inValue); // 从外部访问
+            inValue = 200;
+            Console.WriteLine("使用using static 访问,所以没有使用类型:{0}", inValue); // 从外部访问
+            Console.WriteLine("===========实例构造函数===========");
+            ConstructorClass constructorClass1 = new ConstructorClass();
+            constructorClass1.printValue();
+            Console.WriteLine("===========带参数的构造函数===========");
+            ConstructorClass constructorClass2 = new ConstructorClass(20);
+            constructorClass2.printValue();
         }
     }
 }
@@ -359,4 +399,65 @@ namespace AdvancedClass
     不能提供访问器的方法体-----它们必须被简单地声明为分号.
     get相当于简单的内存读,set相当于简单的写.
     但是无法访问自动属性的方法体,所有在使用自动属性时调用代码通常会更加困难.
+*/
+
+// 静态属性
+/*
+    属性也可以声明为static,和所有静态成员一样,具有一下特点.
+        不能访问类的实例成员,但能被实例成员访问.
+        不管类是否有实例,它们都是存在的.
+        在类的内部,可以仅使用名称来引用静态属性.
+        在类的外部,正如本章前面描述的,可以通过类名或者使用 using static结构来引用静态属性.
+
+    即使没有类的实例,也可以访问属性.
+*/
+
+// 实例构造函数
+/*
+    实例构造函数是一个特殊的方法,它在创建类的每个新实例时执行.
+        构造函数用于初始化实例的状态.
+        如果希望从类的外部创建类的实例,需要将构造函数声明为public.
+    
+    除了下面这几点,构造函数看起来很像类声明中的其他方法:
+        构造函数的名称和类相同.
+        构造函数不能有返回值.
+*/
+
+// 带参数的构造函数
+/*
+    构造函数可以带参数.参数的语法和其他方法完全相同.
+    构造函数可以被重载.
+*/
+
+// 默认构造函数
+/*
+    类的声明中没有显式地提供实例构造函数,那么编译器会提供一个隐式的默认构造函数.
+        没有参数
+        方法体为空
+    
+    如果你为类声明了任何构造函数,那么编译器将不会为该类定义默认构造函数.
+*/
+
+// 静态构造函数
+/*
+    构造函数也可以声明为static.
+    实例构造函数初始化类的每个新实例,而static构造函数初始化类级别的项.
+    静态构造函数初始化类的静态字段.
+        初始化类级别的项.
+            在引用任何静态成员之前.
+            在创建类的任何实例之前.
+        静态构造函数在以后方面与实例构造函数类似.
+            静态构造函数的名称必须和类名相同.
+            构造函数不能返回值.
+        静态构造函数在以下方面和实例构造函数不同.
+            静态构造函数声明中使用static关键字.
+            类只能有一个静态构造函数,而且不能带参数.
+            静态构造函数不能有访问修饰符.
+        
+        类既可以有静态构造函数也可以有实例构造函数.
+        静态构造函数不能访问所在类的实例成员,所以不能使用this访问器
+        不能从程序中显式调用静态构造函数,系统会自动调用他们:
+            在类的任何实例被创建之前.
+            在类的任何静态成员被引用之前.
+
 */
