@@ -53,8 +53,6 @@ namespace AdvancedClass
 
         // 下划线及Camel大小写
         private int _property2; // 后备字段:分配内存 
-        private int _property4; // 字段
-        private int _property5;
 
         // 属性:为分配内存 
         public int Property2
@@ -68,32 +66,60 @@ namespace AdvancedClass
                 return _property2; // 读取后备字段的值
             }
         }
+    }
 
+    class RunOtherComputeAttr
+    {
+        private int _property1; // 字段
+        private int _property2;
         public int Property3
-        { // 属性
+        { // 属性 执行其他计算
             set
             {
             }
             get
             {
-                return 10;
+                return 10; // 只读和只写属性
             }
         }
-        public int Property4
-        { // 属性
+        public int Property1
+        { // 属性 执行其他计算
             set
             {
-                _property4 = value < 100 ? 100 : value;
+                _property1 = value < 100 ? 100 : value; // 表达式
             }
             get
             {
-                return _property4;
+                return _property1;
             }
         }
-        public int Property5
-        { // 属性
-            set => _property5 = value < 100 ? 200 : value;
-            get => _property5;
+
+        public int Property2
+        { // 属性 使用c#7.0中getter/setter表达函数体
+            set => _property2 = value < 100 ? 200 : value;
+            get => _property2;
+        }
+    }
+
+    class RightTriangle // 只读属性
+    {
+        public double A = 3;
+        public double B = 4;
+        // 只读属性
+        public double Hypotenuse
+        {
+            get
+            {
+                return Math.Sqrt((A * A) + (B * B));// 计算返回值
+            }
+        }
+    }
+
+    class AutoPropertyClass
+    {
+        public int inValue
+        {
+            get; set;
         }
     }
 
@@ -131,11 +157,20 @@ namespace AdvancedClass
             attrClass.Property2 = 5; // 隐式调用set方法 
             // 把 属性 看作一个字段,从中读取它的值.
             Console.WriteLine($"读取属性Property2:{attrClass.Property2}"); // 隐式调用get方法 
-            Console.WriteLine($"读取属性Property3:{attrClass.Property3}");
-            attrClass.Property4 = 10;
-            Console.WriteLine($"读取字段Property4:{attrClass.Property4}");
-            attrClass.Property5 = 20;
-            Console.WriteLine($"使用c#7.0中getter/setter表达函数体,读取字段Property5:{attrClass.Property5}");
+            Console.WriteLine("===========执行其他计算属性===========");
+            RunOtherComputeAttr runOtherComputeAttr = new RunOtherComputeAttr();
+            Console.WriteLine($"执行其他计算只读属性Property3:{runOtherComputeAttr.Property3}");
+            runOtherComputeAttr.Property1 = 10;
+            Console.WriteLine($"执行其他计算表达式Property1:{runOtherComputeAttr.Property1}");
+            runOtherComputeAttr.Property2 = 20;
+            Console.WriteLine($"使用c#7.0中getter/setter表达函数体,读取字段Property2:{runOtherComputeAttr.Property2}");
+            Console.WriteLine("===========只读属性===========");
+            RightTriangle rightTriangle = new RightTriangle();
+            Console.WriteLine($"只读属性求第三边长度:{rightTriangle.Hypotenuse}");
+            Console.WriteLine("===========自动实现属性===========");
+            AutoPropertyClass autoPropertyClass = new AutoPropertyClass();
+            autoPropertyClass.inValue = 100;
+            Console.WriteLine("自动实现属性:{0}", autoPropertyClass.inValue);
         }
     }
 }
@@ -312,4 +347,16 @@ namespace AdvancedClass
     有的时候开发人员可能想用公有字段代替属性,因为如果以后需要为字段的数据增加处理逻辑的话,可以再把字段改为属性.
     但是如果这样修改的话,所有 访问 这个字段的其他程序集都需要重新编译,因为字段和属性在编译后的语义不一样.
     如果实现的是属性,只需要修改属性的实现,而无须重新编译访问它的其他程序集.
+*/
+
+// 自动实现属性
+/*
+    自动实现属性(automatically implemented property 或 auto-implemented property,常简称为"自动属性",auto-property),
+    它允许只声明属性而不声明后备字段.
+    编译器会为你创建隐藏的后备字段,并且自动挂接到get和set访问器上.
+
+    不声明后备字段-----编译器根据属性的类型分配存储.
+    不能提供访问器的方法体-----它们必须被简单地声明为分号.
+    get相当于简单的内存读,set相当于简单的写.
+    但是无法访问自动属性的方法体,所有在使用自动属性时调用代码通常会更加困难.
 */
