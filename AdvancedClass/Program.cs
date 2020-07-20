@@ -7,7 +7,7 @@ namespace AdvancedClass
         public int mem;
     }
 
-    class StatiClass // 静态字段
+    class StaticFieldClass // 静态字段
     {
         public int mem1 = 1; // 实例字段
         static public int mem2 = 2; // 静态字段
@@ -24,6 +24,79 @@ namespace AdvancedClass
         }
     }
 
+    class StaticMethodClass
+    {
+        static public int mem1;  // 静态字段
+        static public void outPutPrint() // 静态方法
+        {
+            Console.WriteLine($"打印内部静态字段mem1:{mem1}");
+        }
+    }
+
+    class ConstValueClass
+    {
+        public const int inValue1 = 10; // 预定义简单类型
+        public const int inValue2 = inValue1 * 10; // 表达式
+
+        public void print()
+        {
+            Console.WriteLine($"访问类成员常量:inValue1 {inValue1},inValue2 {inValue2}");
+        }
+    }
+
+    class AttrClass
+    {
+        // 该类有一个共有字段和一个共有属性.
+        // 从用法上无法区分它们
+        public int field = 10; // 字段初始化
+        public int Property1 = 20; // 属性初始化
+
+        // 下划线及Camel大小写
+        private int _property2; // 后备字段:分配内存 
+        private int _property4; // 字段
+        private int _property5;
+
+        // 属性:为分配内存 
+        public int Property2
+        { // 属性声明
+            set
+            {
+                _property2 = value; // 设置后备字段的值
+            }
+            get
+            {
+                return _property2; // 读取后备字段的值
+            }
+        }
+
+        public int Property3
+        { // 属性
+            set
+            {
+            }
+            get
+            {
+                return 10;
+            }
+        }
+        public int Property4
+        { // 属性
+            set
+            {
+                _property4 = value < 100 ? 100 : value;
+            }
+            get
+            {
+                return _property4;
+            }
+        }
+        public int Property5
+        { // 属性
+            set => _property5 = value < 100 ? 200 : value;
+            get => _property5;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -35,13 +108,34 @@ namespace AdvancedClass
             instanceClass2.mem = 20;
             Console.WriteLine($"instanceClass1.mem = {instanceClass1.mem},instanceClass2.mem = {instanceClass2.mem}");
             Console.WriteLine("===========静态字段===========");
-            Console.WriteLine($"访问静态类成员:{StatiClass.mem2}");
-            StatiClass statiClass = new StatiClass();
-            Console.WriteLine($"访问静态成员:{statiClass.mem1}");
+            StaticFieldClass.mem2 = 10; // 没有类实例的静态成员仍可以被复制并读取
+            Console.WriteLine($"访问静态类成员:{StaticFieldClass.mem2}");
+            StaticFieldClass staticFieldClass = new StaticFieldClass();
+            Console.WriteLine($"访问静态成员:{staticFieldClass.mem1}");
             Console.WriteLine("调用 updateValue 方法");
-            statiClass.updateValue(10, 20);
+            staticFieldClass.updateValue(10, 20);
             Console.WriteLine($"调用 valueDisplay 方法");
-            statiClass.valueDisplay();
+            staticFieldClass.valueDisplay();
+            Console.WriteLine("===========静态函数成员===========");
+            StaticMethodClass.mem1 = 10; // 修改静态成员 使用点号语法
+            StaticMethodClass.outPutPrint(); // 调用静态方法 使用点号语法
+            Console.WriteLine("===========成员常量===========");
+            Console.WriteLine($"访问类成员常量:inValue1 {ConstValueClass.inValue1},inValue2 {ConstValueClass.inValue2}");
+            ConstValueClass constValueClass = new ConstValueClass(); // 通过实例化访问
+            constValueClass.print(); // 通过方法访问 成员常量 (没有意义....)
+            Console.WriteLine("===========属性===========");
+            AttrClass attrClass = new AttrClass();
+            Console.WriteLine($"读取字段和属性:field {attrClass.field},property {attrClass.Property1}");
+            Console.WriteLine("===========属性使用===========");
+            // 使用赋值语句设置 属性 的值
+            attrClass.Property2 = 5; // 隐式调用set方法 
+            // 把 属性 看作一个字段,从中读取它的值.
+            Console.WriteLine($"读取属性Property2:{attrClass.Property2}"); // 隐式调用get方法 
+            Console.WriteLine($"读取属性Property3:{attrClass.Property3}");
+            attrClass.Property4 = 10;
+            Console.WriteLine($"读取字段Property4:{attrClass.Property4}");
+            attrClass.Property5 = 20;
+            Console.WriteLine($"使用c#7.0中getter/setter表达函数体,读取字段Property5:{attrClass.Property5}");
         }
     }
 }
@@ -98,5 +192,124 @@ namespace AdvancedClass
     使用点运算符可以从类的外部访问 public 实例成员.
     点运算符由 实例名、点和成员名组成.
 
-    静态成员可以使用点运算符从类的外部访问.但因为没有实例,所以最常用的访问静态成员的方法使用类名,
+    静态成员可以使用点运算符从类的外部访问.但因为没有实例,所以最常用的访问静态成员的方法使用类名.
+*/
+
+// 静态成员的生存期
+/*
+    静态成员的生命期与实例成员的不同.
+    
+    只有实例创建之后才会产生实例成员,在实例销毁之后实例成员也就不存在了.
+    但是即使类没有实例,也存在静态成员,并且可以访问.
+*/
+
+// 静态函数成员
+/*
+    如同静态字段,静态函数成员独立于任何类实例,即使没有类的实例,仍然可以调用静态方法.
+    静态函数成员 不能访问 实例成员,但能访问其他 静态成员.
+*/
+
+// 成员常量
+/*
+    成员变量类似于局部常量,但是它们声明在类声明中而不是方法内
+
+    与局部变量类似,用于初始化成员常量的值在编译时必须是可计算的,而且通常是一个预定义简单类型或由它们组成表达式.
+    不能在成员常量声明以后给它赋值.
+*/
+
+// 常量与静态量
+/*
+    它们对类的每个实例都是"可读的",而且即使没有类的实例也可以使用.
+    与真正的静态量不同,常量没有自己的存储位置,而是在编译时被编译器替换.
+
+    虽然常量成员表现得像静态量,但不能将常量声明为 static
+*/
+
+// 属性
+/*
+    属性是代表类实例或类中的数据项的成员.
+    使用属性就像写入或读取一个字段,语法相同.
+
+    与字段相同:
+        它是命名的类成员.
+        它有类型.
+        它可以被赋值和读取.
+    然而与字段不同,属性是一个 函数成员:
+        它不一定为数据存储分配内存
+        它执行代码
+    属性是一组(两个)匹配的、命名的、称为 访问器 的方法
+        set访问器 为 属性赋值
+        get访问起 从 属性获取值
+*/
+
+// 属性声明和访问器
+/*
+    set 和 get 访问器有预定义的语法和语义.
+    可以把 set 访问器想象成一个方法,带有单一的参数,它"设置"属性的值.
+    get 访问器 没有参数并从属性返回一个值.
+
+    set 访问器总是:
+        拥有一个单独的、隐式的值参,名称为value,与属性的类型相同
+        拥有一个返回类型 void
+    get 访问器总是:
+        没有参数
+        拥有一个与属性类型相同的返回类型
+
+    访问器声明既没有 显式 的参数,也没有返回类型声明.
+    不需要它们,因为它们已经 隐含 在属性的类型中.
+
+    set 访问器中的隐式参数value是一个普通的值参.
+    和其他值参一样,可以用它发送数据到方法体或访问器块.
+    在块的内部,可以像普通变量那样使用value,包括对它赋值.
+
+    访问器的其他要点:
+        get 访问器的所有执行路径必须包括一条return语句,他返回一个属性类型的值.
+        访问器set 和 get 可以以任何顺序声明,并且,除了这两个访问器外,属性上不允许有其他方法.
+*/
+
+// 使用属性
+/*
+    写入 和 读取 属性的方法与访问字段一样.访问器被隐式调用.
+        要写入一个属性,在赋值语句的左边使用属性的名称.
+        要读取一个属性,把属性的名称用在表达式中.
+
+    只要使用属性名就可以写入和读取属性,就好像是一个字段名.
+
+    属性会根据是写入还是读取来隐式地调用适当的访问器.
+    不能显式地调用访问器,因为这样做会产生编译错误.
+*/
+
+// 属性和关联字段
+/*
+    一种常见的方式是在类中将字段声明为 private 以封装该字段,并声明为以一个 public 属性来控制从类的外部对该字段的访问.
+    和属性关联的字段常称为 后备字段 或 后备存储
+
+    字段使用 Camel 大小写,属性使用 Pascal 大小写
+*/
+
+// 执行其他计算
+/*
+    访问器 get 和 set 能执行任何计算,也可以不执行任何计算.
+    唯一 必须 的行为是get访问器要返回一个属性类型的值.
+*/
+
+// 只读和只写属性
+/*
+    只有get访问器的属性称为只读属性.
+        只读属性能够安全地将一个数据项从类或类的实例中传出,而不必让调用者修改属性值.
+    只有set访问器的属性称为只写属性.
+        只写属性很少见,因为它们几乎没有实际用途.如果想在赋值时触发一个副作用,应该使用方法而不是属性.
+    两个访问器中至少有一个必须定义,否则编译器会产生一条错误信息.
+*/
+
+// 属性与公有字段
+/*
+    属性比公有字段更好.
+        属性是函数成员而不是数据成员,允许你处理输入和输出,而公有字段不行.
+        属性可以只读或只写,而字段不行.
+        编译后的变量和编译后的属性语义不同.
+    
+    有的时候开发人员可能想用公有字段代替属性,因为如果以后需要为字段的数据增加处理逻辑的话,可以再把字段改为属性.
+    但是如果这样修改的话,所有 访问 这个字段的其他程序集都需要重新编译,因为字段和属性在编译后的语义不一样.
+    如果实现的是属性,只需要修改属性的实现,而无须重新编译访问它的其他程序集.
 */
