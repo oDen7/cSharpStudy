@@ -3,7 +3,7 @@
  * @Description: 项目描述
  * @Author: oDen7
  * @LastEditors: oDen7
- * @LastEditTime: 2020-07-20 11:14:25
+ * @LastEditTime: 2020-07-20 12:04:28
 --> 
 # CSharpStudy ----- CSharp学习项目
 ### 努力成为一个CSharper
@@ -19,6 +19,7 @@
 > - [X] 数据类型
 > - [ ] 注释
 > - [X] 类的基本概念
+> - [ ] 类的进阶概念
 > - [X] 方法的基本概念
 > - [X] 方法的进阶概念
 > - [ ] 结构
