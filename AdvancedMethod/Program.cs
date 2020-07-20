@@ -58,13 +58,14 @@ namespace AdvancedMethod
             e5 = new Example();
             outParam = e5.val + 15;
         }
-        static void outParamMethod(out int outParam)  // 输出参数 不想再重写一个方法,偷懒了....
+        static void outParamMethod(out int outParam)  // 输出参数 不想再重写一个方法,偷懒了....(利用重载特性)
         {
             Example e = new Example();
             outParam = e.val + 20;
+            Console.WriteLine($"退出 outParamMethod 重载方法");
         }
 
-        static void paramArrayMethod(params int[] paramLists)
+        static void paramArrayMethod(params int[] paramLists) // 参数数组
         {
             if ((paramLists != null) && (paramLists.Length != 0))
             {
@@ -76,7 +77,7 @@ namespace AdvancedMethod
             }
         }
 
-        static ref int Max(ref int v1, ref int v2)
+        static ref int Max(ref int v1, ref int v2) // 返回变量引用
         {
             // 返回较大值的变量引用,而不是实际的值。
             if (v1 > v2)
@@ -84,6 +85,31 @@ namespace AdvancedMethod
             else
                 return ref v2;
         }
+
+        static int namedParamMethod(int a, int b, int c) // 命名参数 
+        {
+            return a + b + c;
+        }
+
+        static int optionalParamMethod(int a, int b = 2, int c = 3) // 可选参数
+        {
+            return a + b + c;
+        }
+
+        static int factorial(int inValue)
+        {
+            if (inValue <= 1)
+            {
+                Console.WriteLine("{0}", inValue);
+                return inValue;
+            }
+            else
+            {
+                Console.WriteLine("{0}", inValue);
+                return inValue * factorial(inValue - 1); // 再一次调用 factorial
+            }
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("=========值参数=========");
@@ -120,6 +146,7 @@ namespace AdvancedMethod
             Example e6 = null;
             outParamMethod(out e6, out int outValue);  // 方法调用 c# 7.0 之后 不需要预先声明 变量作为 out参数
             Console.WriteLine($"C# 7.0 之后 输出参数: {outValue}");
+            Console.WriteLine($"=========栈帧=========");
             outParamMethod(out int outVal);  // 方法重载  方法调用 c# 7.0 之后 不需要预先声明 变量作为 out参数
             Console.WriteLine($"只返回 输出参数:{outVal}");
             Console.WriteLine("=========参数数组延伸式=========");
@@ -141,7 +168,17 @@ namespace AdvancedMethod
             ref int max = ref Max(ref v1, ref v2);
             Console.WriteLine($"引用函数调用:{max}");
             max++;
-            Console.WriteLine($"修改引用变量的值:max {max}, v1:{v1}, v2:{v2}");
+            Console.WriteLine($"修改引用变量的值:max {max}, v1 {v1}, v2 {v2}");
+            Console.WriteLine("=========命名参数=========");
+            Console.WriteLine("{0}", namedParamMethod(1, 2, 3));
+            Console.WriteLine("{0}", namedParamMethod(a: 1, b: 2, c: 3));
+            Console.WriteLine("{0}", namedParamMethod(b: 2, a: 1, c: 3));
+            Console.WriteLine("=========可选参数=========");
+            Console.WriteLine("{0}", optionalParamMethod(1));
+            Console.WriteLine("{0}", optionalParamMethod(1, 2, 3));
+            Console.WriteLine("{0}", optionalParamMethod(2, 3, 1));
+            Console.WriteLine("=========递归=========");
+            Console.WriteLine("{0}", factorial(10));
         }
     }
 }
@@ -181,6 +218,22 @@ namespace AdvancedMethod
     数组是一个引用类型,因此它的所有数据项都保存在堆中。
 */
 
+// 命名参数
+/*
+    只要显式指定参数的名字,就可以任意顺序在方法调用中列出实参
+*/
+
+// 可选参数
+/*
+    为了表明某个参数是可选的,你需要在方法声明中为该参数提供默认值
+
+    不是所有参数都可以作为可选参数.
+        只要值类型的默认值在编译的时候可以确定,就可以使用值类型作为可选参数
+        只要默认值是null的时候,引用类型才可以用作可选参数。
+
+    所有必填参数必须在可选参数声明之前声明.如果有params参数,必须在所有可选参数之后声明。
+*/
+
 // 方法参数优先级:必填参数>可选参数>params参数(参数数组)
 
 // 方法重载
@@ -211,4 +264,25 @@ namespace AdvancedMethod
         ref局部变量只能被赋值一次.
         即使将一个方法声明为ref返回方法,如果在调用该方法时省略了ref关键字,则返回的将是值,而不是指向值的内存位置的指针。
         如果将ref局部变量作为常规的实际参数传递给其他方法,则该方法仅获取该变量的一个副本.(尽管包含指向存储位置的指针,但使用这种方式时,它会传递值而不是引用)
+*/
+
+// 栈帧
+/*
+    再调用方法时,内存从栈的顶部开始分配,保存和方法关联的一些数据项。
+    这块内存叫作方法的栈帧(stack frame)
+
+    栈帧包含的内存保存如下内容:
+        返回地址,也就是在方法退出的时候继续执行的位置.
+        分配内存的参数,也就是方法的值参数,还可以是参数数组(如果有的话).
+        和方法调用相关的方法的其他管理数据项.
+    
+    在方法调用时,整个栈帧都会压入栈.
+    在方法退出时,整个栈帧都会从栈上弹出.(弹出栈帧有的时候也叫作栈展开 unwind)
+*/
+
+// 递归
+/*
+    除了调用其他方法,方法也可以调用自身.这叫作递归
+
+    调用方法自身的机制和调用其他方法其实是完全一样的,都是为每一次方法调用把新的栈帧压入栈顶.
 */
