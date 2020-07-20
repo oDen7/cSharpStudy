@@ -40,7 +40,7 @@ namespace DataType
             float number8 = 3.40282e+038F;
             double number9 = 1.79769e+308;
 
-            int Null = null; // 可空类型
+            Program Null = null; // 可空类型
             // char c = U+0000;
             // decimal d = 7.9e+28;
 
@@ -54,7 +54,7 @@ namespace DataType
             Console.WriteLine("{0}", number7);
             Console.WriteLine("{0}", number8);
             Console.WriteLine("{0}", number9);
-            Console.WriteLine("{0}", NULL);
+            Console.WriteLine("可空类型:{0}", Null);
             // Console.WriteLine("{0}",c);
             // Console.WriteLine("{0}",d);
         }
