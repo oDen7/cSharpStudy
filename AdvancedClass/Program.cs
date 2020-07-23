@@ -289,6 +289,34 @@ namespace AdvancedClass
         }
     }
 
+    class AccessClass // 访问器的访问修饰符
+    {
+        // 尽管可以从类的外部读取属性,但只能在类的内部设置它.
+        // 这是一个非常重要的封装工具.
+        public string name { get; private set; }
+        public AccessClass(string name)
+        {
+            this.name = name;
+        }
+    }
+
+    partial class PartialClass
+    {
+        partial void partialMethod(string str) // 实现分部方法
+        {
+            Console.WriteLine($"partialMethod:{str}");
+        }
+    }
+
+    partial class PartialClass
+    {
+        partial void partialMethod(string str); // 定义分部方法
+        public void printPartialMethod(string str)
+        {
+            partialMethod(str);
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -321,7 +349,7 @@ namespace AdvancedClass
             Console.WriteLine("===========属性使用===========");
             // 使用赋值语句设置 属性 的值
             attrClass.Property2 = 5; // 隐式调用set方法 
-            // 把 属性 看作一个字段,从中读取它的值.
+                                     // 把 属性 看作一个字段,从中读取它的值.
             Console.WriteLine($"读取属性Property2:{attrClass.Property2}"); // 隐式调用get方法 
             Console.WriteLine("===========执行其他计算属性===========");
             RunOtherComputeProperty runOtherComputeProperty = new RunOtherComputeProperty();
@@ -373,12 +401,19 @@ namespace AdvancedClass
             IndexerClass indexerClass = new IndexerClass();
             indexerClass[0] = "xiao";
             indexerClass[1] = "ming";
-            indexerClass[2] = "1999-08-21";
+            indexerClass[2] = "河北省";
             Console.WriteLine($"indexerClass lastName:{indexerClass[0]},firstName:{indexerClass[1]},cityOfBirth:{indexerClass[2]}");
-            indexerClass["student"] = true;
+            indexerClass["student"] = false;
             Console.WriteLine($"indexerClass student:{indexerClass["student"]}");
             indexerClass["sex"] = true;
             Console.WriteLine($"indexerClass 重载 sex:{indexerClass["sex"]}");
+            Console.WriteLine("===========访问器的访问修饰符===========");
+            AccessClass accessClass = new AccessClass("Jack");
+            Console.WriteLine($"访问器的访问修饰符 name:{accessClass.name}");
+            Console.WriteLine("===========分部类===========");
+            PartialClass partialClass = new PartialClass();
+            partialClass.printPartialClass("调用不同文件下的分部类");
+            partialClass.printPartialMethod("调用分部方法");
         }
     }
 }
@@ -703,4 +738,51 @@ namespace AdvancedClass
     它返回索引器类型相同的值.
 
     和属性一样,不能显式调用get和set访问器.
+*/
+
+// 访问器的访问修饰符
+/*
+    带get和set访问器:属性和索引器。
+    默认情况下,成员的两个访问器的访问级别和成员自身相同.
+
+    访问器的访问修饰符的限制
+        仅当成员(属性或索引器)既有get访问器也有set访问器是,其访问器才能有访问修饰符.
+        虽然两个访问器都必须出现,但它们中只能有一个访问修饰符.
+        访问器的访问修饰符的限制必须比成员的访问级别更严格.
+
+    public -> protected internal -> protected = internal -> private
+*/
+
+// 分部类和分部类型
+/*
+    每个分部类的声明都含有一些类成员的声明.
+    类的分部类声明可以在同一一个文件中也可以在不同文件中.
+
+    每个分部类声明必须被标注为partial class.
+
+    类型修饰符partial不是关键字,所以在其他上下文中,可以在程序中把它用作标示符.
+    但直接用作关键字class、struct或interface之前,它表示分部类型.
+*/
+
+// 分部方法
+/*
+    分部方法是声明在分部类中不同部分的方法.
+    分部方法的不同部分可以声明在分部类的不同部分中,也可以声明在同一个部分中.
+
+    分部方法的两个部分
+    定义分部方法声明
+        给出签名和返回类型
+        声明的实现部分只是一个分号
+    实现分部方法声明
+        给出签名和返回类型
+        以普通的语句块形式实现
+    
+    关于分部方法的重要内容
+        定义声明和实现声明的签名和返回类型必须相配.签名和返回类型有如下特征
+            返回类型必须为void
+            签名不能包括访问修饰符,这使分部方法是隐式私有的
+            参数列表不能包括out参数
+            在定义声明和实现声明中都必须包括上下文关键字partial,并且直接放在关键字void之前.
+        可以有定义部分而没有实现部分。在这种情况下,编译器把方法的声明以及方法内部任何对方法的调用都移除.
+        不能只有分部方法的实现部分而没有实现部分.
 */
