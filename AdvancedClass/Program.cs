@@ -152,6 +152,143 @@ namespace AdvancedClass
         }
     }
 
+    class StatiConstructorClass
+    {
+        private static Random random; // 私有静态字段
+
+        static StatiConstructorClass() // 静态构造函数
+        {
+            random = new Random(); // 初始化 random
+        }
+
+        public int getRandom()
+        {
+            return random.Next();
+        }
+    }
+
+    class InitClass // 对象初始化语句
+    {
+        public int x = 1;
+        public int y = 2;
+    }
+
+    class ReadonlyClass // readonly修饰符
+    {
+        public readonly int mem1 = 1; // 初始化
+        public readonly int mem2; // 未初始化
+
+        public ReadonlyClass() // 构造函数
+        {
+            this.mem1 = 10;
+            this.mem2 = 20;
+        }
+        public ReadonlyClass(int mem2) // 构造函数 重载
+        {
+            this.mem2 = mem2;
+        }
+
+        public ReadonlyClass(int mem1, int mem2) // 构造函数 重载
+        {
+            this.mem1 = mem1;
+            this.mem2 = mem2;
+        }
+    }
+
+    class ThisClass // this 关键字
+    {
+        private int mem1 = 10;
+        public int returnMax(int mem1)
+        {
+            return mem1 > this.mem1 ? mem1 : this.mem1;
+        }
+    }
+
+    class IndexerClass // 索引器
+    {
+        public string lastName; // 调用字段0
+        public string firstName; // 调用字段1
+        public string cityOfBirth; // 调用字段2
+        public bool sex; // 调用字段3
+        public bool student; // 调用字段4
+        /*
+            它必须声明为public,以便从类的外部访问.
+            在set访问器方法体内,代码确定索引指的是那个字段,并把隐式变量value的值赋给它.
+            在get访问器方法体内,代码确定索引指的是那个字段,并返回该字段的值.
+        */
+        public string this[int index] // 索引器声明
+        {
+            set
+            {
+                switch (index)
+                {
+                    case 0:
+                        lastName = value;
+                        break;
+                    case 1:
+                        firstName = value;
+                        break;
+                    case 2:
+                        cityOfBirth = value;
+                        break;
+                    default: throw new ArgumentOutOfRangeException("index");
+                }
+            }
+            get
+            {
+                switch (index)
+                {
+                    case 0: return lastName;
+                    case 1: return firstName;
+                    case 2: return cityOfBirth;
+                    default: throw new ArgumentOutOfRangeException("index");
+                }
+            }
+        }
+        public bool this[string index]  // 索引器重载
+        {
+            /*
+                只要索引器的参数列表不同,类就可以有任意多个索引器.
+                索引器类型不同是不够的。
+                这叫做索引器重载,因为所有索引器都有相同的"名称":this访问引用.
+            */
+            // 可以使用 if语句 也可以使用 switch语句
+            set
+            {
+                if (index == "student")
+                {
+                    student = value;
+                }
+                else
+                {
+                    switch (index)
+                    {
+                        case "sex":
+                            sex = value;
+                            break;
+                        default: throw new ArgumentOutOfRangeException("index");
+                    }
+                }
+            }
+            get
+            {
+                // 可以使用 if语句 也可以使用 switch语句
+                if (index == "student")
+                {
+                    return student;
+                }
+                else
+                {
+                    switch (index)
+                    {
+                        case "sex": return sex;
+                        default: throw new ArgumentOutOfRangeException("index");
+                    }
+                }
+            }
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -211,6 +348,37 @@ namespace AdvancedClass
             Console.WriteLine("===========带参数的构造函数===========");
             ConstructorClass constructorClass2 = new ConstructorClass(20);
             constructorClass2.printValue();
+            Console.WriteLine("===========静态构造函数===========");
+            StatiConstructorClass StatiConstructorClass1 = new StatiConstructorClass();
+            StatiConstructorClass StatiConstructorClass2 = new StatiConstructorClass();
+            Console.WriteLine($"Next random #:{StatiConstructorClass1.getRandom()}");
+            Console.WriteLine($"Next random #:{StatiConstructorClass2.getRandom()}");
+            Console.WriteLine("===========对象初始化语句===========");
+            InitClass initClass1 = new InitClass();
+            InitClass initClass2 = new InitClass { x = 10, y = 20 }; // 对象初始化语句
+            Console.WriteLine($"initClass1:x={initClass1.x},x={initClass1.y}");
+            Console.WriteLine($"initClass2:x={initClass2.x},x={initClass2.y}");
+            Console.WriteLine("===========readonly修饰符===========");
+            ReadonlyClass readonlyClass1 = new ReadonlyClass();
+            ReadonlyClass readonlyClass2 = new ReadonlyClass(200);
+            ReadonlyClass readonlyClass3 = new ReadonlyClass(100, 200);
+            Console.WriteLine($"readonlyClass1:x={readonlyClass1.mem1},x={readonlyClass1.mem2}");
+            Console.WriteLine($"readonlyClass2:x={readonlyClass2.mem1},x={readonlyClass2.mem2}");
+            Console.WriteLine($"readonlyClass3:x={readonlyClass3.mem1},x={readonlyClass3.mem2}");
+            Console.WriteLine("===========this关键字===========");
+            ThisClass thisClass = new ThisClass();
+            Console.WriteLine($"this关键字:{thisClass.returnMax(30)}");
+            Console.WriteLine($"this关键字:{thisClass.returnMax(5)}");
+            Console.WriteLine("===========索引器===========");
+            IndexerClass indexerClass = new IndexerClass();
+            indexerClass[0] = "xiao";
+            indexerClass[1] = "ming";
+            indexerClass[2] = "1999-08-21";
+            Console.WriteLine($"indexerClass lastName:{indexerClass[0]},firstName:{indexerClass[1]},cityOfBirth:{indexerClass[2]}");
+            indexerClass["student"] = true;
+            Console.WriteLine($"indexerClass student:{indexerClass["student"]}");
+            indexerClass["sex"] = true;
+            Console.WriteLine($"indexerClass 重载 sex:{indexerClass["sex"]}");
         }
     }
 }
@@ -460,4 +628,79 @@ namespace AdvancedClass
             在类的任何实例被创建之前.
             在类的任何静态成员被引用之前.
 
+*/
+
+// 对象初始化语句
+/*
+    对象初始化语句拓展了创建语法,在表达式的尾部放置了一组成员初始化语句.
+    利用对象初始化语句可以在创建新的对象实例的时,设置字段和属性的值.
+
+    创建对象的代码必须能够访问要初始化的字段和属性.
+    初始化发生在构造方法之后,因此在构造方法中设置的值可能会在之后对象初始化中重置为相同或不同的值.
+*/
+
+// readonly修饰符
+/*
+    字段可以使用readonly修饰符声明.
+    其作用类似于将字段声明为const,一旦值被设定就不能改变.
+
+    const字段只能在字段的声明语句中初始化,而readonly字段可以在下列任意位置设置它的值.
+        字段声明语句,类似于const.
+        类的任何构造函数.如果是static字段,初始化必须在静态构造函数中完成.
+    const字段的值必须在编译时决定,而readonly字段的值可以在运行时决定.
+    const的行为总是静态的,而对于readonly字段以下两点是正确的.
+        它可以是实例字段,也可以是静态字段.
+        它在内存中有存储位置.
+*/
+
+// this关键字
+/*
+    this关键字在类中的使用,是对当前实例的引用.
+    它只能被用在下列类成员的代码块中.
+        实例构造函数
+        实例方法
+        属性和索引器的实例访问器
+    
+    this的目的:
+        用于区分类的成员和局部变量或参数
+        作为调用方法的实参
+*/
+
+// 索引器
+/*
+    使用索引访问它们将会很方便,好像该实例是字段的数组一样.
+    索引器使用索引运算符,它由一对方括号和中间的索引组成.
+
+    什么是索引器
+    索引器是一组get和set访问器,与属性类似.
+    和属性一样,索引器不用分配内存来存储.
+    索引器和属性都主要被用来访问其他数据成员,它们与这些成员关联,并为它们提供获取和设置访问.
+        属性通常表示单个数据成员.
+        索引器通常表达多个数据成员.
+    和属性一样,索引器可以只有一个访问器,也可以两个都有.
+    索引器总是实例成员,因此不能被声明为static.
+    和属性一样,实现get和set访问器的代码不一定要关联到某个字段或属性.
+
+    声明索引器
+    索引器没有名称.在名称的位置是关键字this.
+    参数列表在方括号中间.
+    参数列表中必须至少声明一个参数.
+
+    索引器的set访问器
+    当索引器被用于赋值时,set访问器被调用,并接受两项数据.
+        一个名为value的隐式参数,其中持有要保存的数据.
+        一个或更多索引参数,表示数据应该保存到那里.
+    
+    它的返回类型为void
+    它使用的参数列表和索引器声明中的相同
+    它有一个名为value的隐式参数,值参类型和索引器类型相同.
+
+    索引器的get访问器
+    当使用索引器获取值时,可以通过一个或多个索引参数调用get访问器.
+    索引参数指示获取那个值
+    
+    它的参数列表和索引器声明中的相同.
+    它返回索引器类型相同的值.
+
+    和属性一样,不能显式调用get和set访问器.
 */
