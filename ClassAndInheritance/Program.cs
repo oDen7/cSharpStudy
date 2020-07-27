@@ -57,7 +57,7 @@ namespace ClassAndInheritance
         }
     }
 
-    class BestOverrideClass : OverrideClass // 使用 override 声明 print
+    class BestOverrideClass : OverrideClass // 最高派生(most-derived)
     {
         // 如果把 OverrideClass 的 print 方法声明为 override,那么它会覆写方法的两个低派生级别的版本
         override public void print()
@@ -83,7 +83,7 @@ namespace ClassAndInheritance
         }
     }
 
-    class ControllerInitClass // 构造函数 初始化语句
+    class ControllerInitClass // 构造函数初始化语句
     {
         public int mem1;
         public string mem2;
