@@ -5,6 +5,11 @@ namespace ClassAndInheritance
     class BaseClass // 基类
     {
         public string field1 = "base class field";
+        private int _int = 5;
+        virtual public int property
+        {
+            get { return _int; }
+        }
         public void method1(string value)
         {
             Console.WriteLine($"Base Class Method --- {value}");
@@ -25,10 +30,15 @@ namespace ClassAndInheritance
         }
     }
 
-    class DeriveClass1 : BaseClass  // 屏蔽基类成员
+    class ShieldBaseMemeberClass : BaseClass  // 屏蔽基类成员
     {
-        new public string fileld1 = "屏蔽基类成员重新赋值";
-        new public void method1(int value)
+        /*
+            成员“成员”不会隐藏继承的成员。不需要新关键字
+            即使该声明未覆盖基类中的现有声明，该类声明仍包含new关键字。您可以删除新关键字。
+            https://docs.microsoft.com/en-us/dotnet/csharp/misc/cs0109
+        */
+        new public string field1 = "屏蔽基类成员重新赋值"; // 屏蔽基类成员
+        new public void method1(string value) // 屏蔽基类方法
         {
             Console.WriteLine($"屏蔽基类方法重新声明:{value}");
         }
@@ -39,11 +49,58 @@ namespace ClassAndInheritance
         }
     }
 
-    class DeriveClass2 : BaseClass
+    class OverrideClass : BaseClass // 使用override声明print
     {
         override public void print()
         {
             Console.WriteLine("使用覆写方法");
+        }
+    }
+
+    class BestOverrideClass : OverrideClass // 使用 override 声明 print
+    {
+        // 如果把 OverrideClass 的 print 方法声明为 override,那么它会覆写方法的两个低派生级别的版本
+        override public void print()
+        {
+            Console.WriteLine("最高派生类使用覆写方法");
+        }
+    }
+
+    class BestNewClass : OverrideClass // 使用new 声明print
+    {
+        new public void print()
+        {
+            Console.WriteLine("最高派生类使用覆写方法");
+        }
+    }
+
+    class OverrideOtherMemberClass : BaseClass // 覆写其他成员类型
+    {
+        private int _int = 10;
+        override public int property
+        {
+            get { return _int; }
+        }
+    }
+
+    class ControllerInitClass // 构造函数 初始化语句
+    {
+        public int mem1;
+        public string mem2;
+        public int mem3;
+
+        private ControllerInitClass() // 私有构造函数执行其他构造
+        {
+            mem1 = 10; // 函数共有的初始化
+        }
+
+        public ControllerInitClass(string value) : this()
+        { // 使用构造函数初始化语句
+            mem2 = value;
+        }
+        public ControllerInitClass(int value) : this()
+        { // 使用构造函数初始化语句
+            mem3 = value;
         }
     }
 
@@ -60,23 +117,44 @@ namespace ClassAndInheritance
             Console.WriteLine("===========method2===========");
             deriveClass.method2(deriveClass.field2); // 调用派生类方法 method2
             Console.WriteLine("===========屏蔽基类的成员===========");
-            DeriveClass1 deriveClass1 = new DeriveClass1();
-            Console.WriteLine($"field1:{deriveClass1.field1}");
-            deriveClass1.method1(1);
+            ShieldBaseMemeberClass shieldBaseMemeberClass = new ShieldBaseMemeberClass();
+            Console.WriteLine($"field1:{shieldBaseMemeberClass.field1}");
+            shieldBaseMemeberClass.method1("shieldBaseMemeberClass");
             Console.WriteLine("===========基类访问===========");
-            deriveClass1.printBaseFileld();
+            shieldBaseMemeberClass.printBaseFileld();
             Console.WriteLine("===========使用基类的引用===========");
-            DeriveClass deriveClass2 = new DeriveClass();
-            BaseClass baseClass = (BaseClass)deriveClass2; // 使用 对象强制转换 访问 基类
-            deriveClass2.method2(deriveClass2.field2);
+            DeriveClass baseHref = new DeriveClass();
+            BaseClass baseClass = (BaseClass)baseHref; // 使用 对象强制转换 访问 基类
+            baseHref.method2(baseHref.field2);
             baseClass.method1(baseClass.field1);
             Console.WriteLine("===========虚方法和覆写方法===========");
             BaseClass baseClass1 = new BaseClass();
             baseClass1.print();  // 调用 基类 虚方法
-            DeriveClass2 deriveClass3 = new DeriveClass2();
-            BaseClass baseClass2 = (BaseClass)deriveClass3;
-            deriveClass3.print(); // 使用 覆写方法(派生类同签名方法会覆盖掉基类同签名方法)
+            OverrideClass overrideClass = new OverrideClass();
+            BaseClass baseClass2 = (BaseClass)overrideClass;
+            overrideClass.print(); // 使用 覆写方法(派生类同签名方法会覆盖掉基类同签名方法)
             baseClass2.print();
+            Console.WriteLine("===========覆写标记为override的方法===========");
+            Console.WriteLine("===========使用override声明print===========");
+            BestOverrideClass bestOverrideClass = new BestOverrideClass();
+            BaseClass baseClass3 = (BaseClass)bestOverrideClass;
+            bestOverrideClass.print();
+            baseClass3.print(); // 无论 print 是通过派生类调用还是基类调用的,都会调用最高派生类中的方法.
+            Console.WriteLine("===========使用new声明print===========");
+            BestNewClass bestNewClass = new BestNewClass();
+            BaseClass baseClass4 = (BaseClass)bestNewClass;
+            bestNewClass.print();
+            baseClass4.print(); // 当通过 baseClass4 的引用调用print方法时,方法调用只向上传递了一级,到达了 BestNewClass,在那里它被执行.
+            Console.WriteLine("===========覆写其他成员类型===========");
+            OverrideOtherMemberClass overrideOtherMemberClass = new OverrideOtherMemberClass();
+            BaseClass baseClass5 = (BaseClass)overrideOtherMemberClass;
+            Console.WriteLine($"覆写基类property:{overrideOtherMemberClass.property}");
+            Console.WriteLine($"BaseClass property:{baseClass5.property}");
+            Console.WriteLine("===========构造函数初始化语句===========");
+            ControllerInitClass controllerInitClass1 = new ControllerInitClass("mem2");
+            Console.WriteLine($"mem1:{controllerInitClass1.mem1},mem2:{controllerInitClass1.mem2},mem1:{controllerInitClass1.mem3}");
+            ControllerInitClass controllerInitClass2 = new ControllerInitClass(100);
+            Console.WriteLine($"mem1:{controllerInitClass2.mem1},mem2:{controllerInitClass2.mem2},mem1:{controllerInitClass2.mem3}");
         }
     }
 }
@@ -157,4 +235,51 @@ namespace ClassAndInheritance
         覆写和被覆写的方法必须有相同的可访问性.
         不能覆写 static方法 或 非虚方法
         方法、属性和索引器,以及另一种成员类型-----事件,都可以被声明为 virtual 和 override
+*/
+
+// 覆写标记为override的方法
+/*
+    覆写方法可以在继承的任何层次出现
+        当使用对象基类部分的引用调用一个被覆写的方法时,方法的调用被沿派生层次上溯执行,一直到标记为override的方法的高级派生(most-derived)的版本.
+        如果在更高的派生级别有该方法的其他声明,但没有被标记为override,那么它们不会被调用.
+*/
+
+// 覆写其他成员类型
+/*
+    virtual/override方法,在属性,事件以及索引器上的用法也是一样的.
+*/
+
+// 构造函数的执行
+/*
+    要创建对象的基类部分,需要隐式调用基类的某个构造函数.
+    继承层次链中的每个类在执行它自己的构造函数体之前执行它的基类构造函数.
+
+    周期:
+    初始化实例成员
+    调用基类构造函数
+    执行实例构造函数的方法体
+
+    强烈反对在构造函数中调用虚方法.
+    在执行基类的构造函数时,基类的虚方法会调用派生类的覆写方法,但这是在执行派生类的构造函数方法体之前.
+    因此,调用会在派生类完全初始化之前传递到派生类.
+*/
+
+// 构造函数初始化语句
+/*
+    默认情况下,在构造对象是,将调用基类的无参数构造函数.
+    如果希望派生类使用一个指定的基类构造函数而不是无参数构造函数,必须在构造函数初始化语句中指定它.
+
+    有两种方式的构造函数初始化语句:
+        第一种形式使用关键字base并指明使用哪一个基类构造函数.
+        第二种形式使用关键字this并指明应该使用当前类的哪一个构造函数.
+
+    base()
+    构造函数初始化语句由关键字base和要调用的基类构造函数的参数列表组成.
+    当声明一个不带构造函数初始化语句的构造函数时,它实际上是带有base()构造函数初始化语句的简写形式.
+
+    this()
+    在构造过程(实际上是编译器)使用当前类中其他的构造函数.
+    这种用法的好处:
+        一个类有好几个构造函数,并且它们都需要在对象构造过程开始时执行一些公共的代码.
+        对于这种情况,可以把公共代码提取出来作为一个构造函数,被其他所有的构造函数作为构造函数初始化语句.
 */
