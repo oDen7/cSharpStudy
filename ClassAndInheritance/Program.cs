@@ -1,5 +1,5 @@
 ﻿using System;
-
+using AssemblyNS;
 namespace ClassAndInheritance
 {
     class BaseClass // 基类
@@ -104,6 +104,70 @@ namespace ClassAndInheritance
         }
     }
 
+    class AssemblyDeriveClass : AssemblyClass
+    {
+        // 空类体
+        // 通过该类继承另一个程序集并调用其方法
+    }
+
+    abstract class AbstractClass // 抽象类
+    {
+        public int mem1 = 10; // 数据成员
+        const int mem2 = 20; // 数据成员
+
+        public void basicMethod() // 普通的非抽象方法
+        {
+            Console.WriteLine("普通的非抽象方法");
+        }
+
+        abstract public void abstractMethod(); // 抽象方法
+        abstract public void printString(string s); // 抽象方法
+        abstract public int mem3 { get; set; } // 抽象属性
+    }
+
+    class UseAbstractClass : AbstractClass // 派生类
+    {
+        private int _mem3;
+        override public void abstractMethod() // 抽象方法的实现
+        {
+            Console.WriteLine("覆写abstractMethod方法并调用");
+        }
+
+        override public void printString(string s) // 抽象方法的实现
+        {
+            Console.WriteLine($"原样输出:{s}");
+        }
+
+        override public int mem3
+        { // 抽象属性
+            get
+            {
+                return _mem3;
+            }
+            set
+            {
+                _mem3 = value;
+            }
+        }
+    }
+
+    sealed class SealedClass // 密封类
+    {
+        public void print()
+        {
+            Console.WriteLine("使用密封类");
+        }
+    }
+
+    static class StatiClass
+    {
+        public static int mem1 = 10;
+        public static int returnMultiplication(int x)
+        {
+            return x * x;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -155,6 +219,26 @@ namespace ClassAndInheritance
             Console.WriteLine($"mem1:{controllerInitClass1.mem1},mem2:{controllerInitClass1.mem2},mem1:{controllerInitClass1.mem3}");
             ControllerInitClass controllerInitClass2 = new ControllerInitClass(100);
             Console.WriteLine($"mem1:{controllerInitClass2.mem1},mem2:{controllerInitClass2.mem2},mem1:{controllerInitClass2.mem3}");
+            Console.WriteLine("===========程序集间的继承===========");
+            AssemblyDeriveClass assemblyDeriveClass = new AssemblyDeriveClass();
+            assemblyDeriveClass.print();
+            Console.WriteLine("===========抽象类和抽象方法===========");
+            UseAbstractClass useAbstractClass = new UseAbstractClass();
+            useAbstractClass.basicMethod();
+            useAbstractClass.abstractMethod();
+            Console.WriteLine("===========抽象类中的数据成员和函数成员===========");
+            UseAbstractClass useAbstractClass2 = new UseAbstractClass();
+            useAbstractClass2.printString("hello world");
+            useAbstractClass2.mem3 = 10;
+            Console.WriteLine($"mem3:{useAbstractClass2.mem3}");
+            Console.WriteLine("===========密封类===========");
+            SealedClass sealedClass = new SealedClass();
+            sealedClass.print();
+            Console.WriteLine("===========静态类===========");
+            Console.WriteLine($"访问静态类中的数据:{StatiClass.mem1}");
+            var num = StatiClass.returnMultiplication(10);
+            Console.WriteLine($"输入一个数字,返回该数字相乘的结果:{num}");
+            Console.WriteLine("===========扩展方法===========");
         }
     }
 }
@@ -282,4 +366,136 @@ namespace ClassAndInheritance
     这种用法的好处:
         一个类有好几个构造函数,并且它们都需要在对象构造过程开始时执行一些公共的代码.
         对于这种情况,可以把公共代码提取出来作为一个构造函数,被其他所有的构造函数作为构造函数初始化语句.
+*/
+
+// 类访问修饰符
+/*
+    可访问(acessible)有时也称为可见(visible),它们可以互相使用.
+    public:可以被系统内任何程序集中的代码访问.
+    internal:只能被它自己所在的程序集的类看到.
+*/
+
+// 程序集间的继承
+/*
+    c#允许从一个在不同的程序集内定义的基类来派生类.
+        基类必须被声明为public,这样才能从它所在的程序集外部访问它.
+        (vstudio 工程中的 references节点中添加对包含该基类的程序集的引用.)
+    
+    增加对其他程序集的引用是告诉编译器所需的类型在哪里定义.
+    增加using指令允许你引用其他的类而不必使用它们的完全限定名称.
+*/
+
+// 成员访问修饰符
+/*
+    类的可访问性描述了类的可见性.
+    成员的可访问性描述了方法的可见性.
+
+    所有显式声明在类声明中的成员都是互相可见的,无论它们的访问性如何.
+    继承的成员不在类的声明中显式声明.
+    成员访问级别的名称.
+    public
+    private
+    protected
+    internal
+    protected internal
+    必须对每个成员指定成员访问级别.
+    成员的可访问性不能比它的类高.
+*/
+
+// 访问成员的区域
+/*
+    类通过成员的访问修饰符指明了哪些成员可以被其他类访问.
+
+    public class MyClass{
+        public int mem1;
+        private int mem2;
+        protected int mem3;
+        internal int mem4;
+        protected internal int mem5;
+    }
+
+    另一个类(如类B)能否访问这些成员取决于该类的两个特征:
+        类B是否派生自MyClass类.
+        类B是否和MyClass类在同一个程序集.
+
+    公有成员的可访问性:
+        所有的类,包括程序集内部的类和外部的类都可以自由地访问成员.
+    
+    私有成员的可访问性:
+        private类成员只能被它自己的类的成员访问.它不能被其他的类访问,包括继承它的类.
+        然而,private成员能被嵌套在它的类中的类成员访问.
+
+    受保护成员的可能性:111111
+        protected访问级别如同private访问级别,但它允许派生自该类的类访问成员.
+
+    内部成员的可访问性:
+        internal的成员对程序集内部的所有类可见,但对程序集外部的类不可见.
+
+    受保护内部成员的可访问性:
+        protected internal的成员对所有继承该类的类以及程序集内部的所有类可见.
+
+    最公开 -> 最私有
+    public -> prtected internal -> protected = internal -> private
+
+    派生:指类继承声明该成员的类.
+    非派生:指类不继承声明该成员的类.
+*/
+
+// 抽象类
+/*
+    抽象类是指设计为被继承的类.抽象类只能被用作其他类的基类.
+        不能创建抽象类的实例.
+        抽象类使用abstract修饰符声明.
+        抽象类可以包含抽象成员或普通的非抽象成员.抽象类的成员可以是抽象成员和普通带实现的成员的任意组合.
+        抽象类自己可以派生自另一个抽象类.
+        任何派生自抽象类的类必须使用override关键字实现该类所有的抽象成员,除非派生类自己也是抽象类.
+*/
+
+// 抽象成员
+/*
+    抽象成员只可以在抽象类中声明.
+    抽象成员是指设计为被覆写的函数成员.
+        必须是一个函数成员
+        必须用abstract修饰符标记
+        不能有实现代码块.抽象成员的代码用分号表示.
+    
+    数据成员(字段和常量)不可以声明为abstract
+    可以声明为抽象类的成员:
+    方法
+    属性
+    事件
+    索引器
+
+    尽管抽象对象必须在派生类中用相应的成员覆写,但不能把virtual修饰符附加到abstract修饰符.
+    类似于虚成员,派生类中抽象成员的实现必须指定override修饰符.
+
+    虚方法 抽象成员 比较:
+        virtual: 有实现体, 能被覆写,使用override, 可用于 方法 属性 事件,索引器
+        abstract: 没有实现体,被分号取代 必须被覆写,使用override, 可用于 方法 属性 事件,索引器
+*/
+
+// 密封类
+/*
+    抽象类必须作为基类,它不能像其他独立类对象那样被实例化.密封类与它相反.
+    
+    密封类只能被用作独立的类,它不能被用作基类.
+    密封类使用sealed修饰符标注.
+*/
+
+// 静态类
+/*
+    静态类用于存放不受实例数据影响的数据和函数.
+    静态类的一个常见用途可能是创建一个包含一组数学方法和值的数学库.
+
+    类本身必须标记为static.
+    类的所有成员必须是静态的.
+    类可以有一个静态构造函数,但不能有实例构造函数,因为不能创建该类的实例.
+    静态类是隐式密封的,也就是说,不呢个继承静态类.
+
+    c#6.0开始,可以通过使用using static 指令来访问静态类的成员,而不必使用类名.
+*/
+
+// 扩展方法
+/*
+    拓展方法特性扩展了这个边界,允许编写的方法和声明它的类之外的类关联.
 */
