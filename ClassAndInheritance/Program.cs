@@ -153,18 +153,37 @@ namespace ClassAndInheritance
 
     sealed class SealedClass // 密封类
     {
+        private int mem1, mem2, mem3;
+        public SealedClass(int m1 = 0, int m2 = 0, int m3 = 0)
+        {
+            mem1 = m1;
+            mem2 = m2;
+            mem3 = m3;
+        }
+        public int returnMemSum()
+        {
+            return mem1 + mem2 + mem3;
+        }
         public void print()
         {
             Console.WriteLine("使用密封类");
         }
     }
 
-    static class StatiClass
+    static class StatiClass // 静态类
     {
         public static int mem1 = 10;
         public static int returnMultiplication(int x)
         {
             return x * x;
+        }
+    }
+
+    static class expandClass // 扩展类 (使用扩展方法)
+    {
+        public static int expandMethod(this SealedClass SC) // 扩展方法
+        {
+            return SC.returnMemSum() - 1;
         }
     }
 
@@ -239,6 +258,9 @@ namespace ClassAndInheritance
             var num = StatiClass.returnMultiplication(10);
             Console.WriteLine($"输入一个数字,返回该数字相乘的结果:{num}");
             Console.WriteLine("===========扩展方法===========");
+            SealedClass sealedClass1 = new SealedClass(1, 2, 3);
+            Console.WriteLine($"调用SealedClass中returnMemSum方法:{sealedClass1.returnMemSum()}");
+            Console.WriteLine($"调用expandClass中扩展方法expandMethod:{sealedClass1.expandMethod()}");
         }
     }
 }
@@ -498,4 +520,36 @@ namespace ClassAndInheritance
 // 扩展方法
 /*
     拓展方法特性扩展了这个边界,允许编写的方法和声明它的类之外的类关联.
+    
+        ExtendMyData.Average(md) // 静态调用形式
+        md.Average() // 实例调用形式
+
+    如果使用实例调用形式,需要做的修改是在参数声明中的类型名前增加关键字this
+    把this关键字加到静态类的静态方法的第一个参数上,把该方法从类expandClass的常规方法改变为类SealedClass的扩展方法
+
+    拓展方法的重要要求如下:
+        声明扩展方法的类必须声明为static.
+        扩展方法本身必须声明为static.
+        扩展方法必须包括关键字this作为它的第一个参数类型,并在后面跟着它的扩展的类的名称.
+*/
+
+// 命名约定
+/*
+    Pascal大小写  
+    标识符中每个单词的首字母大写
+    涉及的名称包括:
+    类、方法、命名空间、属性和公有字段
+    CardDeck、Dealershand
+
+    Camel大小写
+    标识符中每个单词的首字母大写,第一个单词除外
+    涉及的名称包括:
+    局部变量的名称、方法声明的形参名称
+    totalCycleCount、randomSealParam
+
+    下划线加Camel大小写
+    以下划线开头的Camel大小的标识符
+    涉及的名称包括:
+    用于私有和受保护的字段
+    _cycleCount、_selectedIndex
 */
