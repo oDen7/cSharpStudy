@@ -134,3 +134,69 @@ namespace ExpressionsAndOperators
     单引号         \'              0x0027
     反斜杠         \\              0x005C
 */
+
+// 字符串字面量
+/*
+    字符串字面量使用双引号标记,不同于字符字面量使用单引号.
+        有两种字符串字面量:
+            常规字符串字面量
+            逐字字符串字面量
+    
+    常规字符串字面量由双引号内的字符序列组成.
+        常规字符串字面量可以包括:
+            字符
+            简单转义序列
+            十六进制和Unicode转义序列
+    
+    string str1 = "Hi there!";
+    string str2 = "Val1\t5,Val2\t10";
+    string str3 = "Add\x000ASome\u0007Interest";
+
+    逐字字符串字面量的书写如同常规字符串字面量,但它以一个@字符为前缀.
+    逐字字符串字面量有以下重要特征:
+        逐字字符串字面量与常规字符串字面量的区别在于字符串中的转义序列不会被求值.
+        在双引号中间的所有内容,包括通常被认为是转义序列的内容,都被严格按字符串中列出的那样打印.
+    
+    逐字字符串字面量的唯一例外是相邻的双引号组,它们被解释为单个双引号字符.
+
+    string rst1 = "Hi there!";
+    string vst1 = @"Hi there!";
+
+    string rst2 = "It started. \ "Four score and seven...\"";
+    string vst2 = @"It started, ""Four score and seven...""";
+
+    string rst3 = "Value 1 \t 5, Val2 \t 10";  // 解释制表符转义字符串
+    string vst3 = @"Value 1 \t 5, Val2 \t 10"; // 不解释制表符            
+    
+    string rst4 = "C:\\Program Files\\Microsoft\\";
+    string vst4 = @"C:\Program Files\Microsoft\";
+
+    string rst5 = "Print \x000A Multiple \u000A Lines";
+    string vst5 = @"Print 
+     Multiple
+     Lines";
+*/
+
+// 求值顺序
+/*
+    表达式可以由许多嵌套的子表达式构成.子表达式的求值顺序可以使表达式的最终值发生变化.
+*/
+
+// 优先级
+/*
+    分类                运算符
+    初级运算符          a.x, f(x), a[x], x++, x--,
+    一元运算符
+    乘法
+    加法
+    移位
+    关系和类型
+    相等
+    位与
+    位异或
+    位或
+    条件与
+    条件或
+    条件选择
+    赋值运算符
+*/
